@@ -28,17 +28,17 @@
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:id="@+id/cardImage"
+                android:id="@+id/album_art"
                 android:scaleType="centerCrop"/>
             
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/cardImage">
+                android:layout_toRightOf="@id/album_art">
 
 
                 <TextView
-                    android:id="@+id/cardTitle"
+                    android:id="@+id/artist_name"
                     android:gravity="center_vertical"
                     android:text="Card Title"
                     android:layout_width="wrap_content"

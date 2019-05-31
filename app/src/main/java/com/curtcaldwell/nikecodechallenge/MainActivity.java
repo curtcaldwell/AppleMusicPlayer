@@ -1,13 +1,17 @@
 package com.curtcaldwell.nikecodechallenge;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.curtcaldwell.nikecodechallenge.model.Feed;
+import com.curtcaldwell.nikecodechallenge.model.Result;
 import com.curtcaldwell.nikecodechallenge.model.Rss;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,48 +28,68 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://rss.itunes.apple.com/api/v1/";
 
+    private FeedAdapter adapter;
+    private RecyclerView recyclerView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView = findViewById(R.id.recyclerView);
+        adapter = new FeedAdapter(this, new AlbumClickListener() {
+            @Override
+            public void onAlbumClicked(Result result) {
+
+                startAlbumDetailsActivity(result);
+
+                Log.i("it works", "it works");
+            }
+        });
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         FeedApi feedApi = retrofit.create(FeedApi.class);
 
-        Call<Rss> call = feedApi.getRss();
+        Call<Rss> call = feedApi.getFeed();
 
         call.enqueue(new Callback<Rss>() {
             @Override
             public void onResponse(Call<Rss> call, Response<Rss> response) {
-                Log.d(TAG, "onResponse: feed: " + response.body().getChannel().getItemList());
-                Log.d(TAG, "onResponse: Server Response " + response.toString());
-
-                List<Rss.Item> items = response.body().getChannel().getItemList();
-
-                ArrayList<Post> posts = new ArrayList<Post>();
-                for (int i = 0; i < items.size(); i++){
-                    posts.add(new Post(
-                            items.get(i).getTitle(),
-                            items.get(i).getDescription(),
-                            items.get(i).getLink()
-                    ));
-                }
-                ListView listView = findViewById(R.id.listView);
-                CustomListAdapter customListAdapter = new CustomListAdapter(MainActivity.this, R.layout.card_layout_main, posts);
-                listView.setAdapter(customListAdapter);
+//                String results = response.body().getFeed();
+                List<Result> results = new ArrayList<>(response.body().getFeed().getResults());
+                adapter.updateList(results);
 
             }
 
             @Override
             public void onFailure(Call<Rss> call, Throwable t) {
-                Log.e(TAG, "onFailure: Unable to retrieve Rss: " + t.getMessage() );
-                Toast.makeText(MainActivity.this, "An Error Occured", Toast.LENGTH_SHORT).show();
+
+                Log.d("On failure: ",  t.getMessage());
+
             }
         });
+
+    }
+    public interface AlbumClickListener {
+        void onAlbumClicked(Result result);
+    }
+
+    public void startAlbumDetailsActivity(Result result) {
+        Intent intent = new Intent(MainActivity.this, AlbumDetailsActivity.class);
+        intent.putExtra("result", result);
+        startActivity(intent);
     }
 }
