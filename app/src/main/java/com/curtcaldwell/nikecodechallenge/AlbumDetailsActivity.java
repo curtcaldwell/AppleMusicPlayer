@@ -5,15 +5,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.curtcaldwell.nikecodechallenge.model.Genre;
 import com.curtcaldwell.nikecodechallenge.model.Result;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlbumDetailsActivity extends AppCompatActivity {
 
@@ -27,9 +30,8 @@ public class AlbumDetailsActivity extends AppCompatActivity {
     private Button playButton;
 
 
-
     @Override
-    public void onCreate( Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_detail_layout);
         result = getIntent().getParcelableExtra("result");
@@ -44,23 +46,42 @@ public class AlbumDetailsActivity extends AppCompatActivity {
 
         albumText.setText(result.getName());
         artistText.setText(result.getArtistName());
-//        genreText.setText(result.getGenres());
-        releaseDateText.setText("Release Date: " + result.getReleaseDate());
+        String genreName = "";
+        List<Genre> genres = new ArrayList<>();
+        genres.addAll(result.getGenres());
+        for(int i = 0; i < genres.size(); i++) {
+            if (genres.get(i) != null && genres.get(i).getName() != null) {
+                if(i != genres.size() - 1) {
+                    genreName = genreName + genres.get(i).getName() ;
+                } else
+                genreName = genreName + ", " + genres.get(i).getName();
+            }
+        }
+
+        genreText.setText(genreName);
+        releaseDateText.setText(getString(R.string.release_date, result.getReleaseDate()));
         copyWriteText.setText(result.getCopyright());
-        Picasso.get().load(result.getArtworkUrl100()).resize(700,700).centerCrop().into(albumArtImage);
+        Picasso.get().load(result.getArtworkUrl100()).resize(700, 700).centerCrop().into(albumArtImage);
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isAppInstalled(getApplicationContext(), "com.apple.android.music")) {
-                    // open the app
-                }else {
+                if (isAppInstalled(getApplicationContext(), "com.apple.android.music")) {
+                    Intent i;
+                    PackageManager packageManager = getPackageManager();
+                    i = packageManager.getLaunchIntentForPackage("com.apple.android.music");
+                    i.addCategory(Intent.CATEGORY_LAUNCHER);
+                    startActivity(i);
+
+                } else {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getArtistUrl()));
-                    startActivity(browserIntent);                }
+                    startActivity(browserIntent);
+                }
             }
         });
 
     }
+
     public static boolean isAppInstalled(Context context, String packageName) {
         try {
             context.getPackageManager().getApplicationInfo(packageName, 0);

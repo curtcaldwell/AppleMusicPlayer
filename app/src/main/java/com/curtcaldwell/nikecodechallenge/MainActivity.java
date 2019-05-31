@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
+
 
 import com.curtcaldwell.nikecodechallenge.model.Result;
 import com.curtcaldwell.nikecodechallenge.model.Rss;
@@ -24,13 +24,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
 
     private static final String BASE_URL = "https://rss.itunes.apple.com/api/v1/";
 
     private FeedAdapter adapter;
     private RecyclerView recyclerView;
-
 
 
     @Override
@@ -45,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
                 startAlbumDetailsActivity(result);
 
-                Log.i("it works", "it works");
             }
         });
         recyclerView.setLayoutManager(layoutManager);
@@ -68,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<Rss>() {
             @Override
             public void onResponse(Call<Rss> call, Response<Rss> response) {
-//                String results = response.body().getFeed();
                 List<Result> results = new ArrayList<>(response.body().getFeed().getResults());
                 adapter.updateList(results);
 
@@ -77,12 +73,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Rss> call, Throwable t) {
 
-                Log.d("On failure: ",  t.getMessage());
+                Log.d("On failure: ", t.getMessage());
 
             }
         });
 
     }
+
     public interface AlbumClickListener {
         void onAlbumClicked(Result result);
     }

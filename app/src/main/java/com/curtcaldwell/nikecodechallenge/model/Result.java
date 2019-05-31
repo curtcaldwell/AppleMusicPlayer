@@ -4,11 +4,14 @@ package com.curtcaldwell.nikecodechallenge.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Result implements Parcelable {
+
 
     @SerializedName("artistName")
     @Expose
@@ -47,6 +50,8 @@ public class Result implements Parcelable {
     @Expose
     private String url;
 
+
+
     protected Result(Parcel in) {
         artistName = in.readString();
         id = in.readString();
@@ -59,6 +64,9 @@ public class Result implements Parcelable {
         artistUrl = in.readString();
         artworkUrl100 = in.readString();
         url = in.readString();
+        genres = in.createTypedArrayList(Genre.CREATOR);
+
+
     }
 
     public static final Creator<Result> CREATOR = new Creator<Result>() {
@@ -186,8 +194,8 @@ public class Result implements Parcelable {
         dest.writeString(contentAdvisoryRating);
         dest.writeString(artistUrl);
         dest.writeString(artworkUrl100);
-//        dest.writeList(genres);
         dest.writeString(url);
+        dest.writeTypedList(genres);
 
     }
 }

@@ -27,7 +27,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     }
 
 
-
     @NonNull
     @Override
     public FeedViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -38,7 +37,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final FeedViewHolder feedViewHolder, int i ) {
+    public void onBindViewHolder(@NonNull final FeedViewHolder feedViewHolder, int i) {
         feedViewHolder.setData(resultList.get(i), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
