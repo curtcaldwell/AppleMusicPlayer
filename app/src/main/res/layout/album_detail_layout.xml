@@ -61,16 +61,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:gravity="center"
         android:paddingTop="100dp"
         android:paddingBottom="0dp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/release_date_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/artist_text"
-        tools:text="text"
-        android:gravity="center"
-        android:textStyle="italic"/>
+        tools:text="text" />
 
     <TextView
         android:id="@+id/release_date_text"
@@ -100,11 +100,11 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@id/play_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/release_date_text"
-        app:layout_constraintBottom_toTopOf="@id/play_button"
         tools:text="text" />
 
     <Button

@@ -51,7 +51,6 @@ public class Result implements Parcelable {
     private String url;
 
 
-
     protected Result(Parcel in) {
         artistName = in.readString();
         id = in.readString();

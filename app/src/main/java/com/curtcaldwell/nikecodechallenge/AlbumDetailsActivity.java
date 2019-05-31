@@ -49,12 +49,12 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         String genreName = "";
         List<Genre> genres = new ArrayList<>();
         genres.addAll(result.getGenres());
-        for(int i = 0; i < genres.size(); i++) {
+        for (int i = 0; i < genres.size(); i++) {
             if (genres.get(i) != null && genres.get(i).getName() != null) {
-                if(i != genres.size() - 1) {
-                    genreName = genreName + genres.get(i).getName() ;
+                if (i != genres.size() - 1) {
+                    genreName = genreName + genres.get(i).getName();
                 } else
-                genreName = genreName + ", " + genres.get(i).getName();
+                    genreName = genreName + ", " + genres.get(i).getName();
             }
         }
 
